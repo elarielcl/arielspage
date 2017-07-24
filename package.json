@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "start": "nodemon --use_strict index.js",
-  "bundle": "webpack"
+    "start": "node --use_strict index.js",
+    "bundle": "webpack"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-preset-es2016": "^6.24.1",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "material-ui": "^0.18.7",
@@ -25,6 +26,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "nodemon": "^1.11.0",
+    "pm2": "^2.6.1",
     "webpack": "^3.3.0"
   }
 }
