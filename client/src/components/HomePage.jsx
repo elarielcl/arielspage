@@ -45,7 +45,7 @@ export default class HomePage extends React.Component {
                     iconElementLeft={<IconButton onTouchTap={this.handleToggle}><NavigationMenu/></IconButton>}
                 />
                 <Card className="container" style={{marginTop:"1em"}}>
-                    <CardTitle title="Ariel's Page" subtitle="Ariel's Page." />
+                    <CardTitle title="Ariel's Page" subtitle="$\LaTeX$ formulas are working!" />
                 </Card>
             </div>
         );
