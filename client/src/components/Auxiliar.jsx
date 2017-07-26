@@ -16,20 +16,39 @@ const auxiliares = {
 export default class Auxiliar extends React.Component {
     constructor(props){
         super(props);
-        const id = props.match.params.id
-        const found = id in auxiliares;
-        if (found)
-            this.id = id;
-        this.found = found;
         this.converter = new showdown.Converter();
+        this.id = props.match.params.id;
+        this.state = {info: "", found: true};
+
+    }
+
+    componentWillMount() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('post', '/data/getAuxiliarsInfo/:route?');
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.responseType = 'json';
+        xhr.addEventListener('load', () => {
+            if (xhr.status === 200) {
+                this.setState({
+                    info: xhr.response.info
+                });
+            }else {
+                this.setState({
+                    found: false
+                });
+            }
+        });
+
+        const data = `route=${this.id}`;
+        xhr.send(data);
     }
 
     render() {
-        if (this.found)
+        if (this.state.found)
             return (
                 <div style={{display: "flex", justifyContent:"center"}}>
                     <Card className="container" style={{marginTop:"5em"}}>
-                        <div style={{margin: "2em"}}dangerouslySetInnerHTML={{ __html: this.converter.makeHtml(auxiliares[this.id]) }} />
+                        <div style={{margin: "2em"}}dangerouslySetInnerHTML={{ __html: this.converter.makeHtml(this.state.info) }} />
                     </Card>
                 </div>
             );

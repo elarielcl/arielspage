@@ -12,7 +12,24 @@ export default class Base extends React.Component {
     constructor(props) {
         super(props);
         this.handleToggle = this.handleToggle.bind(this);
-        this.state = {open: false};
+        this.state = {open: false, auxiliars: []};
+    }
+
+    componentWillMount() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('get', '/data/getAuxiliarsNamesAndRoutes');
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.responseType = 'json';
+        xhr.addEventListener('load', () => {
+            if (xhr.status === 200) {
+                this.setState({
+                    auxiliars: xhr.response
+                });
+            }
+        });
+
+        xhr.send();
+
     }
 
     handleToggle () {
@@ -31,10 +48,7 @@ export default class Base extends React.Component {
                         title="Ariel's Page"
                         showMenuIconButton={false}
                     />
-                    <MenuItem primaryText="Auxiliar 1" href="/auxiliar/1"/>
-                    <MenuItem primaryText="Auxiliar 2" href="/auxiliar/2"/>
-                    <MenuItem primaryText="Auxiliar 3" href="/auxiliar/3"/>
-                    <MenuItem primaryText="Auxiliar 4" href="/auxiliar/4"/>
+                    {this.state.auxiliars.map((auxiliar, index) => {return <MenuItem key={index} primaryText={auxiliar.name} href={"/auxiliar/"+auxiliar.route}/>})}
                 </Drawer>
 
                 <AppBar
