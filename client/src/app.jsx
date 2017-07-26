@@ -3,6 +3,7 @@ import ReactDom from 'react-dom';
 import Auxiliar from './components/Auxiliar.jsx';
 import HomePage from './components/HomePage.jsx';
 import NotFound from './components/NotFound.jsx';
+import NewPost from './components/NewPost.jsx';
 import Base from './components/Base.jsx';
 import { getMuiTheme, MuiThemeProvider} from 'material-ui/styles';
 import {red500, red700} from 'material-ui/styles/colors';
@@ -29,6 +30,7 @@ ReactDom.render(
                 <Switch>
                     <Route exact path="/" component={HomePage}/>
                     <Route exact path="/auxiliar/:id" component={Auxiliar}/>
+                    <Route exact path="/new_post" component={NewPost}/>
                     <Route exact path="*" component={NotFound}/>
                 </Switch>
             </Base>
