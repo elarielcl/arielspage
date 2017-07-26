@@ -8,6 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 
 export default class NewPost extends React.Component {
+
     constructor(props){
         super(props);
         this.converter = new showdown.Converter();
