@@ -1,8 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
-const path = require('path');
+
+
+// connect to the database and load models
+require('./server/models').connect("mongodb://localhost/arielspage", {
+    useMongoClient: true,
+});
 
 // tell the app to look for static files in these directories
 app.use(express.static('./server/static/'));
