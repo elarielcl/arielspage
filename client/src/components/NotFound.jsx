@@ -11,9 +11,11 @@ export default class NotFound extends React.Component {
 
     render() {
         return (
-            <Card className="container" style={{marginTop:"5em"}}>
-                <CardTitle title="Not Found"/>
-            </Card>
+            <div style={{display: "flex", justifyContent:"center"}}>
+                <Card className="container" style={{marginTop:"5em"}}>
+                    <CardTitle title="Not Found"/>
+                </Card>
+            </div>
         );
     }
 }
