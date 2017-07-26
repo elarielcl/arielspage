@@ -26,6 +26,7 @@ export default class NewPost extends React.Component {
                             style={{width:"75%"}}
                             multiLine={true}
                             onChange={(event, newValue) => {this.setState({info:newValue});}}
+                            name="info"
                         />
                     </Card>
                     <Card className="container" style={{marginTop:"5em"}}>
