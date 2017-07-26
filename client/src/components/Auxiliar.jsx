@@ -32,6 +32,7 @@ export default class Auxiliar extends React.Component {
                 this.setState({
                     info: xhr.response.info
                 });
+                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
             }else {
                 this.setState({
                     found: false
