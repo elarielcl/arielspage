@@ -3,8 +3,9 @@ import { Card } from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import showdown from 'showdown';
 import RaisedButton from 'material-ui/RaisedButton';
-
-
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import Snackbar from 'material-ui/Snackbar';
 
 
 export default class NewPost extends React.Component {
@@ -13,10 +14,18 @@ export default class NewPost extends React.Component {
         super(props);
         this.converter = new showdown.Converter();
         this.converter.setFlavor('github');
-        this.state = {info: "", password:"", route:"", name:""};
-
+        this.state = {info: "", password:"", route:"", name:"", open:false, snackOpen:false, snackText:""};
+        this.handleClose = this.handleClose.bind(this);
+        this.handleSnackClose = this.handleSnackClose.bind(this);
     }
 
+    handleClose() {
+        this.setState({open: false});
+    }
+
+    handleSnackClose() {
+        this.setState({snackOpen: false});
+    }
 
     render() {
         return (
@@ -48,32 +57,60 @@ export default class NewPost extends React.Component {
                         floatingLabelText="Route"
                         onChange={(event, newValue) => {this.setState({route:newValue});}}/>
 
+                    <div>
+                        <RaisedButton style={{marginTop:"3em"}} label="Agregar" primary={true} onTouchTap={() => {
+                            this.setState({open: true});
+                        }}/>
+                        <RaisedButton style={{marginTop:"3em", marginLeft:"1em"}} label="Latex" secondary={true} onTouchTap={()=>{MathJax.Hub.Queue(["Typeset",MathJax.Hub]);}}/>
+                    </div>
+                </div>
+                <Dialog
+                    title="¿Está seguro que quiere añadir este post?"
+                    actions={[
+                        <FlatButton
+                            label="No"
+                            primary={true}
+                            onTouchTap={this.handleClose}
+                        />,
+                        <FlatButton
+                            label="Si"
+                            primary={true}
+                            onTouchTap={() => {
+                                 const xhr = new XMLHttpRequest();
+                                 xhr.open('post', '/data/addAuxiliar');
+                                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                                 xhr.responseType = 'json';
+                                 xhr.addEventListener('load', () => {
+                                     if (xhr.status === 200) {
+                                        this.setState({snackOpen:true, snackText:"Auxiliar Agregado"});
+                                     }else {
+                                         this.setState({snackOpen:true, snackText:"Error"});
+                                     }
+                                });
+                                 const data = `password=${this.state.password}&name=${this.state.name}&route=${this.state.route}&info=${this.state.info}`;
+                                 xhr.send(data);
+                                 this.handleClose();
+                            }}
+                        />,
+                    ]}
+                    modal={false}
+                    open={this.state.open}
+                    onRequestClose={this.handleClose}
+                    autoScrollBodyContent={true}
+                >
                     <TextField
                         style={{margin:"1em"}}
                         hintText="Password"
                         floatingLabelText="Password"
                         type="password"
                         onChange={(event, newValue) => {this.setState({password:newValue});}}/>
-                    <div>
-                        <RaisedButton style={{marginTop:"3em"}} label="Agregar" primary={true} onTouchTap={() => {
-                            const xhr = new XMLHttpRequest();
-                            xhr.open('post', '/data/addAuxiliar');
-                            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                            xhr.responseType = 'json';
-                            xhr.addEventListener('load', () => {
-                                if (xhr.status === 200) {
-                                    console.log("SIIIII");
-                                }else {
-                                    console.log("NOOOOO");
-                                }
-                            });
-
-                            const data = `password=${this.state.password}&name=${this.state.name}&route=${this.state.route}&info=${this.state.info}`;
-                            xhr.send(data);
-                        }}/>
-                        <RaisedButton style={{marginTop:"3em", marginLeft:"1em"}} label="Latex" secondary={true} onTouchTap={()=>{MathJax.Hub.Queue(["Typeset",MathJax.Hub]);}}/>
-                    </div>
-                </div>
+                </Dialog>
+                <Snackbar
+                    open={this.state.snackOpen}
+                    message={this.state.snackText}
+                    autoHideDuration={3000}
+                    onRequestClose={this.handleSnackClose}
+                />
             </div>
         );
     }
