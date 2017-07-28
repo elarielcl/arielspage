@@ -41,7 +41,7 @@ export default class Auxiliar extends React.Component {
         if (this.state.found)
             return (
                 <div style={{display: "flex", justifyContent:"center"}}>
-                    <Card className="container" style={{marginTop:"5em"}}>
+                    <Card className="container" style={{marginTop:"5em", width:"75%"}}>
                         <div style={{margin: "2em"}}dangerouslySetInnerHTML={{ __html: this.converter.makeHtml(this.state.info) }} />
                     </Card>
                 </div>
