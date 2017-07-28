@@ -13,7 +13,7 @@ router.get('/getAuxiliarsNamesAndRoutes',(req, res) => {
 });
 
 router.post('/getAuxiliarsInfo',(req, res) => {
-    const route = req.body.route;
+    const route = decodeURIComponent(req.body.route);
     Auxiliar.findOne({route:route}, function (err, auxiliar) {
         if (err || !auxiliar) res.status(400).end();
         else res.status(200).json(auxiliar);
@@ -21,10 +21,10 @@ router.post('/getAuxiliarsInfo',(req, res) => {
 });
 
 router.post('/addAuxiliar',(req, res) => {
-    if (!(req.body.password == password)) return res.status(400).end();
-    const name = req.body.name;
-    const route = req.body.route;
-    const info = req.body.info;
+    if (!(decodeURIComponent(req.body.password) == password)) return res.status(400).end();
+    const name = decodeURIComponent(req.body.name);
+    const route = decodeURIComponent(req.body.route);
+    const info = decodeURIComponent(req.body.info);
     const newAux = new Auxiliar({name:name, route:route, info:info});
     newAux.save(function (err) {
         if (err) res.status(400).end();
@@ -33,10 +33,10 @@ router.post('/addAuxiliar',(req, res) => {
 });
 
 router.post('/modifyAuxiliar',(req, res) => {
-    if (!(req.body.password == password)) return res.status(400).end();
-    const name = req.body.name;
-    const route = req.body.route;
-    const info = req.body.info;
+    if (!(decodeURIComponent(req.body.password) == password)) return res.status(400).end();
+    const name = decodeURIComponent(req.body.name);
+    const route = decodeURIComponent(req.body.route);
+    const info = decodeURIComponent(req.body.info);
 
     Auxiliar.findOne({route:route}, function (err, auxiliar) {
         if (err || !auxiliar) res.status(400).end();
@@ -53,8 +53,8 @@ router.post('/modifyAuxiliar',(req, res) => {
 });
 
 router.post('/removeAuxiliar',(req, res) => {
-    if (!(req.body.password == password)) return res.status(400).end();
-    const route = req.body.route;
+    if (!(decodeURIComponent(req.body.password) == password)) return res.status(400).end();
+    const route = decodeURIComponent(req.body.route);
 
     Auxiliar.findOne({route:route}, function (err, auxiliar) {
         if (err || !auxiliar) res.status(400).end();

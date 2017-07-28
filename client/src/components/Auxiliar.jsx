@@ -33,7 +33,7 @@ export default class Auxiliar extends React.Component {
             }
         });
 
-        const data = `route=${this.id}`;
+        const data = `route=${encodeURIComponent(this.id)}`;
         xhr.send(data);
     }
 

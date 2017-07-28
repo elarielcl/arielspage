@@ -55,7 +55,7 @@ export default class EditPost extends React.Component {
             }
         });
 
-        const data = `route=${this.id}`;
+        const data = `route=${encodeURIComponent(this.id)}`;
         xhr.send(data);
     }
 
@@ -138,7 +138,7 @@ export default class EditPost extends React.Component {
                                         }
                                     });
 
-                                    const data = `password=${this.state.password}&name=${this.state.name}&route=${this.state.route}&info=${this.state.info}`;
+                                    const data = `password=${encodeURIComponent(this.state.password)}&name=${encodeURIComponent(this.state.name)}&route=${encodeURIComponent(this.state.route)}&info=${encodeURIComponent(this.state.info)}`;
                                     xhr.send(data);
                                     this.handleModifyClose();
                                 }}
@@ -181,7 +181,8 @@ export default class EditPost extends React.Component {
                                         }
                                     });
 
-                                    const data = `password=${this.state.password}&route=${this.state.route}`;
+                                    const data = `password=${encodeURIComponent(this.state.password)}&route=${encodeURIComponent(this.state.route)}`;
+                                    xhr.send(data);
                                     xhr.send(data);
                                     this.handleRemoveClose();
                                 }}

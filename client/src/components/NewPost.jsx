@@ -87,7 +87,7 @@ export default class NewPost extends React.Component {
                                          this.setState({snackOpen:true, snackText:"Error"});
                                      }
                                 });
-                                 const data = `password=${this.state.password}&name=${this.state.name}&route=${this.state.route}&info=${this.state.info}`;
+                                 const data = `password=${encodeURIComponent(this.state.password)}&name=${encodeURIComponent(this.state.name)}&route=${encodeURIComponent(this.state.route)}&info=${encodeURIComponent(this.state.info)}`;
                                  xhr.send(data);
                                  this.handleClose();
                             }}
