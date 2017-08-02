@@ -10,13 +10,15 @@ import Snackbar from 'material-ui/Snackbar';
 
 
 
-export default class EditPost extends React.Component {
+export default class EditPage extends React.Component {
 
     constructor(props){
         super(props);
         this.converter = new showdown.Converter();
         this.converter.setFlavor('github');
-        this.id = props.match.params.id;
+        this.id = props.match.params[0].split("/");
+        this.id = this.id.slice(0, this.id.length-1).join("/");
+        this.route = props.match.params[0];
         this.state = {info: "", password:"", route:"", name:"", found:true, removeOpen:false, modifyOpen:false, snackOpen:false, snackText:""};
         this.handleModifyClose = this.handleModifyClose.bind(this);
         this.handleRemoveClose = this.handleRemoveClose.bind(this);
@@ -37,15 +39,16 @@ export default class EditPost extends React.Component {
 
     componentWillMount() {
         const xhr = new XMLHttpRequest();
-        xhr.open('post', '/data/getAuxiliarsInfo');
+        xhr.open('post', '/data/getPagesInfo');
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.responseType = 'json';
         xhr.addEventListener('load', () => {
             if (xhr.status === 200) {
+                const routes = xhr.response.route.split("/");
                 this.setState({
                     info: xhr.response.info,
                     name: xhr.response.name,
-                    route: xhr.response.route,
+                    route: routes[routes.length - 1],
                 });
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
             }else {
@@ -55,7 +58,7 @@ export default class EditPost extends React.Component {
             }
         });
 
-        const data = `route=${encodeURIComponent(this.id)}`;
+        const data = `route=${encodeURIComponent(this.route)}`;
         xhr.send(data);
     }
 
@@ -115,7 +118,7 @@ export default class EditPost extends React.Component {
                         </div>
                     </div>
                     <Dialog
-                        title="¿Está seguro que quiere modificar este post?"
+                        title="¿Está seguro que quiere modificar esta página?"
                         actions={[
                             <FlatButton
                                 label="No"
@@ -127,18 +130,18 @@ export default class EditPost extends React.Component {
                                 primary={true}
                                 onTouchTap={() => {
                                     const xhr = new XMLHttpRequest();
-                                    xhr.open('post', '/data/modifyAuxiliar');
+                                    xhr.open('post', '/data/modifyPage');
                                     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                                     xhr.responseType = 'json';
                                     xhr.addEventListener('load', () => {
                                         if (xhr.status === 200) {
-                                            this.setState({snackOpen:true, snackText:"Auxiliar Modificado"});
+                                            this.setState({snackOpen:true, snackText:"Página Modificada"});
                                         }else {
                                             this.setState({snackOpen:true, snackText:"Error"});
                                         }
                                     });
 
-                                    const data = `password=${encodeURIComponent(this.state.password)}&name=${encodeURIComponent(this.state.name)}&route=${encodeURIComponent(this.state.route)}&info=${encodeURIComponent(this.state.info)}`;
+                                    const data = `password=${encodeURIComponent(this.state.password)}&name=${encodeURIComponent(this.state.name)}&route=${encodeURIComponent(this.id+((this.id === "" && this.state.route==="")?"":"/")+this.state.route)}&info=${encodeURIComponent(this.state.info)}`;
                                     xhr.send(data);
                                     this.handleModifyClose();
                                 }}
@@ -158,7 +161,7 @@ export default class EditPost extends React.Component {
                     </Dialog>
 
                     <Dialog
-                        title="¿Está seguro que quiere eliminar este post?"
+                        title="¿Está seguro que quiere eliminar esta página?"
                         actions={[
                             <FlatButton
                                 label="No"
@@ -170,19 +173,18 @@ export default class EditPost extends React.Component {
                                 primary={true}
                                 onTouchTap={() => {
                                     const xhr = new XMLHttpRequest();
-                                    xhr.open('post', '/data/removeAuxiliar');
+                                    xhr.open('post', '/data/removePage');
                                     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                                     xhr.responseType = 'json';
                                     xhr.addEventListener('load', () => {
                                         if (xhr.status === 200) {
-                                            this.setState({snackOpen:true, snackText:"Auxiliar Eliminado"});
+                                            this.setState({snackOpen:true, snackText:"Pagina Eliminada"});
                                         }else {
                                             this.setState({snackOpen:true, snackText:"Error"});
                                         }
                                     });
 
-                                    const data = `password=${encodeURIComponent(this.state.password)}&route=${encodeURIComponent(this.state.route)}`;
-                                    xhr.send(data);
+                                    const data = `password=${encodeURIComponent(this.state.password)}&route=${encodeURIComponent(this.id+"/"+this.state.route)}`;
                                     xhr.send(data);
                                     this.handleRemoveClose();
                                 }}

@@ -1,11 +1,9 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import Auxiliar from './components/Auxiliar.jsx';
-import HomePage from './components/HomePage.jsx';
-import NotFound from './components/NotFound.jsx';
-import NewPost from './components/NewPost.jsx';
-import EditPost from './components/EditPost.jsx';
-import Base from './components/Base.jsx';
+import Page from './components/Page.jsx';
+import NewPage from './components/NewPage.jsx';
+import EditPage from './components/EditPage.jsx';
+import BasePage from './components/BasePage.jsx';
 import { getMuiTheme, MuiThemeProvider} from 'material-ui/styles';
 import {red500, red700} from 'material-ui/styles/colors';
 import {Route, Router, Switch} from "react-router-dom";
@@ -27,15 +25,11 @@ const f = true
 ReactDom.render(
     <MuiThemeProvider muiTheme={muiTheme}>
         <Router history={createHistory()}>
-            <Base>
-                <Switch>
-                    <Route exact path="/" component={HomePage}/>
-                    <Route exact path="/auxiliar/:id" component={Auxiliar}/>
-                    <Route exact path="/new_post" component={NewPost}/>
-                    <Route exact path="/edit_post/:id" component={EditPost}/>
-                    <Route exact path="*" component={NotFound}/>
-                </Switch>
-            </Base>
+            <Switch>
+                <Route exact path="*/new_page" component={(props) => {return <BasePage {...props}><NewPage {...props} /></BasePage> }}/>
+                <Route exact path="*/edit_page" component={(props) => {return <BasePage {...props}><EditPage {...props} /></BasePage> }}/>
+                <Route exact path="*" component={(props) => {return <BasePage {...props}><Page {...props} /></BasePage> }}/>
+            </Switch>
         </Router>
     </MuiThemeProvider>
     , document.getElementById('react-app'));

@@ -5,19 +5,20 @@ import showdown from 'showdown';
 
 
 
-export default class Auxiliar extends React.Component {
+export default class Page extends React.Component {
     constructor(props){
         super(props);
         this.converter = new showdown.Converter();
         this.converter.setFlavor('github');
-        this.id = props.match.params.id;
+        this.id = props.match.params[0];
+        if (this.id==="/") this.id = "";
         this.state = {info: "", found: true};
 
     }
 
     componentWillMount() {
         const xhr = new XMLHttpRequest();
-        xhr.open('post', '/data/getAuxiliarsInfo');
+        xhr.open('post', '/data/getPagesInfo');
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.responseType = 'json';
         xhr.addEventListener('load', () => {

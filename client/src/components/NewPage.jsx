@@ -8,10 +8,11 @@ import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 
 
-export default class NewPost extends React.Component {
+export default class NewPage extends React.Component {
 
     constructor(props){
         super(props);
+        this.path = props.match.params[0];
         this.converter = new showdown.Converter();
         this.converter.setFlavor('github');
         this.state = {info: "", password:"", route:"", name:"", open:false, snackOpen:false, snackText:""};
@@ -65,7 +66,7 @@ export default class NewPost extends React.Component {
                     </div>
                 </div>
                 <Dialog
-                    title="¿Está seguro que quiere añadir este post?"
+                    title="¿Está seguro que quiere añadir esta página?"
                     actions={[
                         <FlatButton
                             label="No"
@@ -76,20 +77,20 @@ export default class NewPost extends React.Component {
                             label="Si"
                             primary={true}
                             onTouchTap={() => {
-                                 const xhr = new XMLHttpRequest();
-                                 xhr.open('post', '/data/addAuxiliar');
-                                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                                 xhr.responseType = 'json';
-                                 xhr.addEventListener('load', () => {
-                                     if (xhr.status === 200) {
-                                        this.setState({snackOpen:true, snackText:"Auxiliar Agregado"});
-                                     }else {
-                                         this.setState({snackOpen:true, snackText:"Error"});
-                                     }
+                                const xhr = new XMLHttpRequest();
+                                xhr.open('post', '/data/addPage');
+                                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                                xhr.responseType = 'json';
+                                xhr.addEventListener('load', () => {
+                                    if (xhr.status === 200) {
+                                        this.setState({snackOpen:true, snackText:"Página Agregada"});
+                                    }else {
+                                        this.setState({snackOpen:true, snackText:"Error"});
+                                    }
                                 });
-                                 const data = `password=${encodeURIComponent(this.state.password)}&name=${encodeURIComponent(this.state.name)}&route=${encodeURIComponent(this.state.route)}&info=${encodeURIComponent(this.state.info)}`;
-                                 xhr.send(data);
-                                 this.handleClose();
+                                const data = `password=${encodeURIComponent(this.state.password)}&name=${encodeURIComponent(this.state.name)}&route=${encodeURIComponent(this.path+"/"+this.state.route)}&parentsroute=${encodeURIComponent(this.path)}&info=${encodeURIComponent(this.state.info)}`;
+                                xhr.send(data);
+                                this.handleClose();
                             }}
                         />,
                     ]}

@@ -7,28 +7,31 @@ import IconButton from 'material-ui/IconButton';
 import MenuItem from 'material-ui/MenuItem';
 import { browserHistory } from 'react-router-dom'
 
-export default class Base extends React.Component {
+export default class BasePage extends React.Component {
 
     constructor(props) {
         super(props);
+        this.path = props.match.params[0];
+        if (this.path==="/") this.path = "";
         this.handleToggle = this.handleToggle.bind(this);
-        this.state = {open: false, auxiliars: []};
+        this.state = {open: false, posts: []};
     }
 
     componentWillMount() {
         const xhr = new XMLHttpRequest();
-        xhr.open('get', '/data/getAuxiliarsNamesAndRoutes');
+        xhr.open('post', '/data/getPagesNamesAndRoutes');
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.responseType = 'json';
         xhr.addEventListener('load', () => {
             if (xhr.status === 200) {
                 this.setState({
-                    auxiliars: xhr.response
+                    posts: xhr.response
                 });
             }
         });
 
-        xhr.send();
+        const data = `route=${encodeURIComponent(this.path)}`;
+        xhr.send(data);
 
     }
 
@@ -48,7 +51,7 @@ export default class Base extends React.Component {
                         title="Ariel's Page"
                         showMenuIconButton={false}
                     />
-                    {this.state.auxiliars.map((auxiliar, index) => {return <MenuItem key={index} primaryText={auxiliar.name} href={"/auxiliar/"+auxiliar.route}/>})}
+                    {this.state.posts.map((post, index) => {return <MenuItem key={index} primaryText={post.name} href={post.route}/>})}
                 </Drawer>
 
                 <AppBar
@@ -57,7 +60,7 @@ export default class Base extends React.Component {
                     iconElementLeft={<IconButton onTouchTap={this.handleToggle}><NavigationMenu/></IconButton>}
                 />
                 {this.props.children}
-        </div>
+            </div>
         );
     }
 }
