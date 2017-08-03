@@ -55,7 +55,7 @@ export default class BasePage extends React.Component {
                 </Drawer>
 
                 <AppBar
-                    style={{ position: "fixed" }}
+                    style={{ position: "fixed", height: "10vh" }}
                     title="Ariel's Page"
                     iconElementLeft={<IconButton onTouchTap={this.handleToggle}><NavigationMenu/></IconButton>}
                 />

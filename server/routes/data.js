@@ -12,15 +12,15 @@ router.post('/getPagesNamesAndRoutes',(req, res) => {
         if (err || !page) return res.status(400).end();
     }).populate('childrensPages').exec(function (err, page) {
         if (err || !page) return res.status(400).end();
-        res.status(200).json((page.childrensPages)? page.childrensPages : []);
+        return res.status(200).json((page.childrensPages)? page.childrensPages : []);
     });
 });
 
 router.post('/getPagesInfo',(req, res) => {
     const route = decodeURIComponent(req.body.route);
     Page.findOne({route:route}, function (err, page) {
-        if (err || !page) res.status(400).end();
-        else res.status(200).json(page);
+        if (err || !page) return res.status(400).end();
+        else return res.status(200).json(page);
     });
 });
 
@@ -31,12 +31,12 @@ router.post('/addPage',(req, res) => {
     const info = decodeURIComponent(req.body.info);
     const parentsroute = decodeURIComponent(req.body.parentsroute);
     Page.findOne({route: parentsroute}, function (err, page) {
-        if (err || !page) res.status(400).end();
+        if (err || !page) return res.status(400).end();
         else {
             const newPage = new Page({name:name, route:route, info:info, parentsPage: page});
             newPage.save(function (err) {
-                if (err) res.status(400).end();
-                else res.status(200).end();
+                if (err) return res.status(400).end();
+                else return res.status(200).end();
             });
         }
     });
@@ -48,15 +48,16 @@ router.post('/modifyPage',(req, res) => {
     const name = decodeURIComponent(req.body.name);
     const route = decodeURIComponent(req.body.route);
     const info = decodeURIComponent(req.body.info);
-    Page.findOne({route:route}, function (err, page) {
-        if (err || !page) res.status(400).end();
+    const id = decodeURIComponent(req.body.id);
+    Page.findById(id, function (err, page) {
+        if (err || !page) return res.status(400).end();
         else {
             page.route = route;
             page.name = name;
             page.info = info;
             page.save(function (err) {
-                if (err) res.status(400).end();
-                res.status(200).end();
+                if (err) return res.status(400).end();
+                return res.status(200).end();
             });
         }
     });
@@ -64,12 +65,12 @@ router.post('/modifyPage',(req, res) => {
 
 router.post('/removePage',(req, res) => {
     if (!(decodeURIComponent(req.body.password) == password)) return res.status(400).end();
-    const route = decodeURIComponent(req.body.route);
-    Page.findOne({route:route}, function (err, page) {
+    const id = decodeURIComponent(req.body.id);
+    Page.findById(id, function (err, page) {
         if (err || !page) return res.status(400).end();
     }).remove(function (err) {
-        if (err) res.status(400).end();
-        else res.status(200).end();
+        if (err) return res.status(400).end();
+        else return res.status(200).end();
     });
 });
 

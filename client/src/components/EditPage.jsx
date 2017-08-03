@@ -19,7 +19,7 @@ export default class EditPage extends React.Component {
         this.id = props.match.params[0].split("/");
         this.id = this.id.slice(0, this.id.length-1).join("/");
         this.route = props.match.params[0];
-        this.state = {info: "", password:"", route:"", name:"", found:true, removeOpen:false, modifyOpen:false, snackOpen:false, snackText:""};
+        this.state = {id:"", info: "", password:"", route:"", name:"", found:true, removeOpen:false, modifyOpen:false, snackOpen:false, snackText:""};
         this.handleModifyClose = this.handleModifyClose.bind(this);
         this.handleRemoveClose = this.handleRemoveClose.bind(this);
         this.handleSnackClose = this.handleSnackClose.bind(this);
@@ -46,6 +46,7 @@ export default class EditPage extends React.Component {
             if (xhr.status === 200) {
                 const routes = xhr.response.route.split("/");
                 this.setState({
+                    id: xhr.response._id,
                     info: xhr.response.info,
                     name: xhr.response.name,
                     route: routes[routes.length - 1],
@@ -141,7 +142,7 @@ export default class EditPage extends React.Component {
                                         }
                                     });
 
-                                    const data = `password=${encodeURIComponent(this.state.password)}&name=${encodeURIComponent(this.state.name)}&route=${encodeURIComponent(this.id+((this.id === "" && this.state.route==="")?"":"/")+this.state.route)}&info=${encodeURIComponent(this.state.info)}`;
+                                    const data = `password=${encodeURIComponent(this.state.password)}&id=${encodeURIComponent(this.state.id)}&name=${encodeURIComponent(this.state.name)}&route=${encodeURIComponent(this.id+((this.id === "" && this.state.route==="")?"":"/")+this.state.route)}&info=${encodeURIComponent(this.state.info)}`;
                                     xhr.send(data);
                                     this.handleModifyClose();
                                 }}
@@ -184,7 +185,7 @@ export default class EditPage extends React.Component {
                                         }
                                     });
 
-                                    const data = `password=${encodeURIComponent(this.state.password)}&route=${encodeURIComponent(this.id+"/"+this.state.route)}`;
+                                    const data = `password=${encodeURIComponent(this.state.password)}&id=${encodeURIComponent(this.state.id)}`;
                                     xhr.send(data);
                                     this.handleRemoveClose();
                                 }}
