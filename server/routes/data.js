@@ -7,17 +7,20 @@ const password = "pleasedonthackthis";
 
 
 router.post('/getPagesNamesAndRoutes',(req, res) => {
-    const route = decodeURIComponent(req.body.route);
+    const route = req.body.route;
     Page.findOne({route:route}, function(err, page) {
         if (err || !page) return res.status(400).end();
-    }).populate('childrensPages').exec(function (err, page) {
+    }).populate('childrensPages').populate({path: 'parentsPage', populate: {path:'childrensPages'}})
+        .exec(function (err, page) {
         if (err || !page) return res.status(400).end();
-        return res.status(200).json((page.childrensPages)? page.childrensPages : []);
+        var pages = (page.childrensPages)? page.childrensPages : [];
+        if (pages.length == 0) return res.status(200).json(page.parentsPage.childrensPages);
+        else return res.status(200).json(pages);
     });
 });
 
 router.post('/getPagesInfo',(req, res) => {
-    const route = decodeURIComponent(req.body.route);
+    const route = req.body.route;
     Page.findOne({route:route}, function (err, page) {
         if (err || !page) return res.status(400).end();
         else return res.status(200).json(page);
@@ -25,11 +28,11 @@ router.post('/getPagesInfo',(req, res) => {
 });
 
 router.post('/addPage',(req, res) => {
-    if (!(decodeURIComponent(req.body.password) == password)) return res.status(400).end();
-    const name = decodeURIComponent(req.body.name);
-    const route = decodeURIComponent(req.body.route);
-    const info = decodeURIComponent(req.body.info);
-    const parentsroute = decodeURIComponent(req.body.parentsroute);
+    if (!(req.body.password == password)) return res.status(400).end();
+    const name = req.body.name;
+    const route = req.body.route;
+    const info = req.body.info;
+    const parentsroute = req.body.parentsroute;
     Page.findOne({route: parentsroute}, function (err, page) {
         if (err || !page) return res.status(400).end();
         else {
@@ -44,11 +47,11 @@ router.post('/addPage',(req, res) => {
 });
 
 router.post('/modifyPage',(req, res) => {
-    if (!(decodeURIComponent(req.body.password) == password)) return res.status(400).end();
-    const name = decodeURIComponent(req.body.name);
-    const route = decodeURIComponent(req.body.route);
-    const info = decodeURIComponent(req.body.info);
-    const id = decodeURIComponent(req.body.id);
+    if (!(req.body.password == password)) return res.status(400).end();
+    const name = req.body.name;
+    const route = req.body.route;
+    const info = req.body.info;
+    const id = req.body.id;
     Page.findById(id, function (err, page) {
         if (err || !page) return res.status(400).end();
         else {
@@ -64,8 +67,8 @@ router.post('/modifyPage',(req, res) => {
 });
 
 router.post('/removePage',(req, res) => {
-    if (!(decodeURIComponent(req.body.password) == password)) return res.status(400).end();
-    const id = decodeURIComponent(req.body.id);
+    if (!(req.body.password == password)) return res.status(400).end();
+    const id = req.body.id;
     Page.findById(id, function (err, page) {
         if (err || !page) return res.status(400).end();
     }).remove(function (err) {
